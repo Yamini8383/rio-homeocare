@@ -1,6 +1,6 @@
 import streamlit as st
 import json
-import re
+import random
 
 # --- Simple Password Gate ---
 st.set_page_config(page_title="Homeopathy Patient Records")
@@ -96,7 +96,11 @@ if menu == "➕ Add / Update Patient":
     st.markdown("### 👤 Personal Details")
     col1, col2, col3 = st.columns(3)
     with col1:
-        case_no = st.text_input("Case Number", value=prefill("case_no"))
+        if prefill("case_no"):
+            case_no = st.text_input("Case Number", value=prefill("case_no"))
+        else:
+            random_case = str(random.randint(1000, 9999))
+            case_no = st.text_input("Case Number", value=random_case)
     with col2:
         name = st.text_input("Patient Name", value=prefill("name"))
     with col3:
@@ -334,6 +338,7 @@ elif menu == "🔍 View Patient Record":
 
 
 
+
 # ---------- DELETE PATIENT RECORD ----------
 if menu == "🗑️ Delete Patient":
     st.header("🗑️ Delete Patient Record")
@@ -341,9 +346,13 @@ if menu == "🗑️ Delete Patient":
     delete_choice = st.radio("Delete by:", ["Case Number", "Full Name"])
     delete_value = st.text_input("Enter value")
 
+    confirm = st.checkbox("⚠️ I confirm that I want to permanently delete this record")
+
     if st.button("Delete Record"):
         if not delete_value:
             st.error("Please enter a value.")
+        elif not confirm:
+            st.warning("Please check the confirmation box before deleting.")
         else:
             # --- Delete by Case Number ---
             if delete_choice == "Case Number":
@@ -351,7 +360,7 @@ if menu == "🗑️ Delete Patient":
                 doc = doc_ref.get()
                 if doc.exists:
                     doc_ref.delete()
-                    st.success(f"Record deleted successfully for Case#: {delete_value}")
+                    st.success(f"✅ Record deleted successfully for Case#: {delete_value}")
                 else:
                     st.warning("No record found with that Case Number.")
 
@@ -361,7 +370,8 @@ if menu == "🗑️ Delete Patient":
                 if docs:
                     for d in docs:
                         d.reference.delete()
-                    st.success(f"Record(s) deleted successfully for patient: {delete_value}")
+                    st.success(f"✅ Record(s) deleted successfully for patient: {delete_value}")
                 else:
                     st.warning("No record found with that name.")
+
 
