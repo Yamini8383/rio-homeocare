@@ -7,16 +7,15 @@ st.set_page_config(page_title="Homeopathy Patient Records")
 
 APP_PASSWORD = st.secrets.get("app_password")
 
-raw_key = st.secrets["firebase_key"]
+raw_key = st.secrets["firebase_key"].strip()
 
-# Remove any invisible characters (like BOM, non-breaking spaces)
-raw_key = raw_key.encode('utf-8', 'ignore').decode('utf-8')
-raw_key = re.sub(r"^[^{]*", "", raw_key)  # drop everything before first {
-raw_key = re.sub(r"[^}]*$", "", raw_key)  # drop everything after last }
+# If it contains literal \n sequences like {\n "type": ...}, convert them to real newlines
+if raw_key.startswith("{\\n"):
+    raw_key = raw_key.replace("\\n", "\n")
 
-# Fix newlines in private_key if needed
-if "\\n" not in raw_key and "PRIVATE KEY" in raw_key:
-    raw_key = raw_key.replace("\n", "\\n")
+# Keep only valid JSON body between first { and last }
+raw_key = re.sub(r"^[^{]*", "", raw_key)
+raw_key = re.sub(r"[^}]*$", "", raw_key)
 
 try:
     st.code(raw_key[:200])
