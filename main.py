@@ -38,31 +38,41 @@ menu = st.sidebar.radio("Navigation", ["Add / Update Patient", "View Patient Rec
 if menu == "Add / Update Patient":
     st.header("Add / Update Patient Record")
 
+    import pandas as pd
+
+    # --- Keep form state persistent across reruns ---
+    if "loaded_data" not in st.session_state:
+        st.session_state.loaded_data = None
+
     # ---------------- Search Section ----------------
     st.markdown("#### Search Existing Record")
     search_choice = st.radio("Search by:", ["Case Number", "Full Name"])
     search_value = st.text_input("Enter value")
 
-    existing_data = None
     search_button = st.button("Load Existing Record")
 
     if search_button and search_value:
         if search_choice == "Case Number":
             doc = patients_ref.document(search_value).get()
             if doc.exists:
-                existing_data = doc.to_dict()
+                st.session_state.loaded_data = doc.to_dict()
                 st.success(f"Record found for Case#: {search_value}")
             else:
+                st.session_state.loaded_data = None
                 st.warning("No record found. You can create a new one.")
         else:
-            docs = patients_ref.where("name", "==", search_value).stream()
-            docs = list(docs)
+            docs = list(patients_ref.where("name", "==", search_value).stream())
             if docs:
-                existing_data = docs[0].to_dict()
-                search_value = existing_data.get("case_no", "")
-                st.success(f"Record found for patient: {existing_data.get('name')} (Case#: {search_value})")
+                st.session_state.loaded_data = docs[0].to_dict()
+                st.success(
+                    f"Record found for patient: {st.session_state.loaded_data.get('name')} "
+                    f"(Case#: {st.session_state.loaded_data.get('case_no')})"
+                )
             else:
+                st.session_state.loaded_data = None
                 st.warning("No record found. You can create a new one.")
+
+    existing_data = st.session_state.loaded_data
 
     # Helper to prefill data
     def prefill(key, default=""):
@@ -76,15 +86,27 @@ if menu == "Add / Update Patient":
     with col2:
         name = st.text_input("Patient Name", value=prefill("name"))
     with col3:
-        reg_date = st.date_input("Registration Date", value=pd.to_datetime(prefill("reg_date", pd.Timestamp.today())).date())
+        reg_date = st.date_input(
+            "Registration Date",
+            value=pd.to_datetime(prefill("reg_date", pd.Timestamp.today())).date()
+        )
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        age = st.number_input("Age", min_value=0, max_value=120, value=int(prefill("age", 0)) if prefill("age") else 0)
+        age = st.number_input(
+            "Age", min_value=0, max_value=120,
+            value=int(prefill("age", 0)) if prefill("age") else 0
+        )
     with col2:
-        sex = st.selectbox("Sex", ["", "Male", "Female", "Other"], index=["", "Male", "Female", "Other"].index(prefill("sex", "")) if prefill("sex", "") in ["", "Male", "Female", "Other"] else 0)
+        sex = st.selectbox(
+            "Sex", ["", "Male", "Female", "Other"],
+            index=["", "Male", "Female", "Other"].index(prefill("sex", "")) if prefill("sex", "") in ["", "Male", "Female", "Other"] else 0
+        )
     with col3:
-        marital_status = st.selectbox("Marital Status", ["", "Single", "Married", "Divorced", "Widowed"], index=["", "Single", "Married", "Divorced", "Widowed"].index(prefill("marital_status", "")) if prefill("marital_status", "") in ["", "Single", "Married", "Divorced", "Widowed"] else 0)
+        marital_status = st.selectbox(
+            "Marital Status", ["", "Single", "Married", "Divorced", "Widowed"],
+            index=["", "Single", "Married", "Divorced", "Widowed"].index(prefill("marital_status", "")) if prefill("marital_status", "") in ["", "Single", "Married", "Divorced", "Widowed"] else 0
+        )
 
     contact_no = st.text_input("Contact Number", value=prefill("contact_no"))
     address = st.text_area("Address", value=prefill("address"))
@@ -132,7 +154,7 @@ if menu == "Add / Update Patient":
     with col1:
         bp = st.text_input("B.P", value=prefill("bp"))
     with col2:
-        weight = st.number_input("Weight (kg)", min_value=0, value=float(prefill("weight", 0)) if prefill("weight") else 0)
+        weight = st.number_input("Weight (kg)", min_value=0.0, value=float(prefill("weight", 0)) if prefill("weight") else 0.0)
     with col3:
         temp = st.text_input("Temperature", value=prefill("temp"))
 
@@ -192,7 +214,6 @@ if menu == "Add / Update Patient":
                 "present_med": present_med
             }
 
-            # Append new follow-up if provided
             new_followup = {
                 "followup_date": str(followup_date),
                 "description": description,
@@ -210,6 +231,9 @@ if menu == "Add / Update Patient":
 
             doc_ref.set(data, merge=True)
             st.success(f"Record saved successfully for Case#: {case_no}")
+
+            # Update session state with new data
+            st.session_state.loaded_data = data
         else:
             st.error("Please enter both Case Number and Patient Name")
 
