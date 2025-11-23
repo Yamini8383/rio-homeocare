@@ -9,21 +9,18 @@ APP_PASSWORD = st.secrets.get("app_password")
 
 raw_key = st.secrets["firebase_key"]
 
-# Find the first { ... } JSON object even if Streamlit adds extra characters
-match = re.search(r"\{.*\}", raw_key, flags=re.DOTALL)
-if not match:
-    st.error("Could not locate valid JSON in firebase_key secret")
-    st.stop()
+# Remove any invisible characters (like BOM, non-breaking spaces)
+raw_key = raw_key.encode('utf-8', 'ignore').decode('utf-8')
+raw_key = re.sub(r"^[^{]*", "", raw_key)  # drop everything before first {
+raw_key = re.sub(r"[^}]*$", "", raw_key)  # drop everything after last }
 
-clean_json = match.group(0)
-
-# Escape literal newlines inside the private key if necessary
-if "\\n" not in clean_json and "PRIVATE KEY" in clean_json:
-    clean_json = clean_json.replace("\n", "\\n")
+# Fix newlines in private_key if needed
+if "\\n" not in raw_key and "PRIVATE KEY" in raw_key:
+    raw_key = raw_key.replace("\n", "\\n")
 
 try:
     st.code(raw_key[:200])
-    firebase_key_json = json.loads(clean_json)
+    firebase_key_json = json.loads(raw_key)
 except Exception as e:
     st.error(f"Error loading Firebase key: {e}")
     st.stop()
