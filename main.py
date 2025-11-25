@@ -322,24 +322,31 @@ elif menu == "🔍 View Patient Record":
                         f"**Hypertension:** {data.get('hypertension', '')}  \n"
                         f"**Thyroid:** {data.get('thyroid', '')}  \n"
                         f"**Hyper Lipidaemia:** {data.get('hyperlipidaemia', '')}  \n"
-                        f"**Appetite:** {data.get('appetite', '')}  \n"
-                        f"**Bowels:** {data.get('bowels', '')}  \n"
-                        f"**Sweat:** {data.get('sweat', '')}  \n"
-                        f"**Urine:** {data.get('urine', '')}  \n"
-                        f"**Sleep:** {data.get('sleep', '')}  \n"
-                        f"**Dreams:** {data.get('dreams', '')}  \n"
-                        f"**Thermals:** {data.get('thermals', '')}  \n"
-                        f"**Desires:** {data.get('desires', '')}  \n"
-                        f"**Aversions:** {data.get('aversions', '')}  \n"
-                        f"**Side:** {data.get('side', '')}  \n"
-                        f"**Habits:** {data.get('habits', '')}  \n"
-                        f"**Sun Headache:** {data.get('sun_headache', '')}  \n"
-                        f"**Thirst:** {data.get('thirst', '')}  \n"
-                        f"**Intolerance:** {data.get('intolerance', '')}  \n"
-                        f"**Menstrual & Obstetric History:** {data.get('menstrual_history', '')}  \n"
+                        f"**Menstrual & Obstetric History:** {data.get('menstrual_history', '')}   \n"
                         f"**Mind:** {data.get('mind', '')}"
-
                     )
+
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.markdown(
+                            f"**Appetite:** {data.get('appetite', '')}  \n"
+                            f"**Bowels:** {data.get('bowels', '')}  \n"
+                            f"**Sweat:** {data.get('sweat', '')}  \n"
+                            f"**Urine:** {data.get('urine', '')}  \n"
+                            f"**Sleep:** {data.get('sleep', '')}  \n"
+                            f"**Dreams:** {data.get('dreams', '')}  \n"
+                            f"**Thermals:** {data.get('thermals', '')}"
+                        )
+                    with col2:
+                        st.markdown(
+                            f"**Desires:** {data.get('desires', '')}   \n"
+                            f"**Aversions:** {data.get('aversions', '')}  \n"
+                            f"**Side:** {data.get('side', '')}  \n"
+                            f"**Habits:** {data.get('habits', '')}  \n"
+                            f"**Sun Headache:** {data.get('sun_headache', '')}  \n"
+                            f"**Thirst:** {data.get('thirst', '')}  \n"
+                            f"**Intolerance:** {data.get('intolerance', '')}  \n"
+                        )
 
                     st.divider()
                     st.markdown("Examination & Medication")
