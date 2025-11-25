@@ -295,7 +295,7 @@ elif menu == "🔍 View Patient Record":
                 st.subheader(f"Patient: {data.get('name', 'N/A')} ({data.get('case_no', 'N/A')})")
 
                 with st.container():
-                    st.markdown("Personal Details")
+                    st.markdown("**Personal Details**")
                     col1, col2 = st.columns(2)
                     with col1:
                         st.markdown(f"**Age:** {data.get('age', 'N/A')}")
@@ -308,7 +308,7 @@ elif menu == "🔍 View Patient Record":
                         st.markdown(f"**Occupation:** {data.get('occupation', 'N/A')}")
 
                     st.divider()
-                    st.markdown("Medical History")
+                    st.markdown("**Medical History**")
                     st.markdown(f"**Diagnosis:** {data.get('diagnosis', '')}")
                     st.markdown(f"**Complaints:** {data.get('presenting_complaints', '')}")
                     st.markdown(f"**Investigation:** {data.get('investigation', '')}")
@@ -316,7 +316,7 @@ elif menu == "🔍 View Patient Record":
                     st.markdown(f"**Past Treatment:** {data.get('past_treatment', '')}")
 
                     st.divider()
-                    st.markdown("Mind & Physicals")
+                    st.markdown("**Mind & Physicals**")
                     st.markdown(
                         f"**Diabetes:** {data.get('diabetes', '')}  \n"
                         f"**Hypertension:** {data.get('hypertension', '')}  \n"
@@ -349,7 +349,7 @@ elif menu == "🔍 View Patient Record":
                         )
 
                     st.divider()
-                    st.markdown("Examination & Medication")
+                    st.markdown("**Examination & Medication**")
                     st.markdown(
                         f"**B.P:** {data.get('bp', '')}  \n"
                         f"**Weight:** {data.get('weight', '')}  \n"
@@ -362,7 +362,7 @@ elif menu == "🔍 View Patient Record":
                     )
 
                     st.divider()
-                    st.markdown("Follow-Ups")
+                    st.markdown("**Follow-Ups**")
                     followups = data.get("followups", [])
                     if followups:
                         for idx, f in enumerate(followups, 1):
