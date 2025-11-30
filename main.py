@@ -151,20 +151,24 @@ if menu == "➕ Add / Update Patient":
 
     # ---------------- Physical & Mental Details ----------------
     st.markdown("### 🧠 Physical & Mental Details")
-    appetite = st.text_input("Appetite", value=prefill("appetite"))
-    desires = st.text_input("Desires", value=prefill("desires"))
-    aversions = st.text_input("Aversions", value=prefill("aversions"))
-    bowels = st.text_input("Bowels", value=prefill("bowels"))
-    sweat = st.text_input("Sweat", value=prefill("sweat"))
-    side = st.text_input("Side", value=prefill("side"))
-    urine = st.text_input("Urine", value=prefill("urine"))
-    habits = st.text_input("Habits", value=prefill("habits"))
-    sleep = st.text_input("Sleep", value=prefill("sleep"))
-    sun_headache = st.text_input("Sun Headache", value=prefill("sun_headache"))
-    dreams = st.text_input("Dreams", value=prefill("dreams"))
-    thirst = st.text_input("Thirst", value=prefill("thirst"))
-    thermals = st.text_input("Thermals", value=prefill("thermals"))
-    intolerance = st.text_input("Intolerance", value=prefill("intolerance"))
+    col1, col2 = st.columns(2)
+    with col1:
+        appetite = st.text_input("Appetite", value=prefill("appetite"))
+        desires = st.text_input("Desires", value=prefill("desires"))
+        aversions = st.text_input("Aversions", value=prefill("aversions"))
+        bowels = st.text_input("Bowels", value=prefill("bowels"))
+        sweat = st.text_input("Sweat", value=prefill("sweat"))
+        side = st.text_input("Side", value=prefill("side"))
+        urine = st.text_input("Urine", value=prefill("urine"))
+    with col2:
+        habits = st.text_input("Habits", value=prefill("habits"))
+        sleep = st.text_input("Sleep", value=prefill("sleep"))
+        sun_headache = st.text_input("Sun Headache", value=prefill("sun_headache"))
+        dreams = st.text_input("Dreams", value=prefill("dreams"))
+        thirst = st.text_input("Thirst", value=prefill("thirst"))
+        thermals = st.text_input("Thermals", value=prefill("thermals"))
+        intolerance = st.text_input("Intolerance", value=prefill("intolerance"))
+
     menstrual_history = st.text_area("Menstrual & Obstetric History", value=prefill("menstrual_history"))
     mind = st.text_area("Mind", value=prefill("mind"))
 
